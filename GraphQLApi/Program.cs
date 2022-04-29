@@ -1,0 +1,37 @@
+using GraphiQl;
+using GraphQLApi.DataAccess;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+//database
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source=DataAccess\\coursedb.sqlite"));
+
+//graphql
+builder.Services.AddMvc(options => options.EnableEndpointRouting = false);
+
+
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+//graphql
+app.UseGraphiQl("/graphql");
+app.UseMvc();
+
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+
+
+app.Run();
